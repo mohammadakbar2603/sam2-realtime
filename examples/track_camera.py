@@ -12,7 +12,7 @@ import cv2
 import numpy as np
 from sam2.build_sam import build_sam2_video_predictor
 
-from sam2_stream import LiveSAM2, color_for_id, overlay_masks
+from sam2_realtime import LiveSAM2, color_for_id, overlay_masks
 
 
 def main():
@@ -37,7 +37,7 @@ def main():
     first = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
 
     prompts = []
-    win = "sam2-stream (click objects, 't' track, 'r' reset, Esc quit)"
+    win = "sam2-realtime (click objects, 't' track, 'r' reset, Esc quit)"
     cv2.namedWindow(win)
 
     def on_mouse(event, x, y, flags, param):

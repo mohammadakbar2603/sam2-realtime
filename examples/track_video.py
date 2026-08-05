@@ -15,7 +15,7 @@ import cv2
 import numpy as np
 from sam2.build_sam import build_sam2_video_predictor
 
-from sam2_stream import LiveSAM2, overlay_masks
+from sam2_realtime import LiveSAM2, overlay_masks
 
 
 def main():

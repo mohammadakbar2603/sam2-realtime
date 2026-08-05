@@ -1,7 +1,9 @@
-# sam2-stream
+# sam2-realtime
 
 Real-time object tracking with [SAM 2](https://github.com/facebookresearch/sam2) on a **live camera**
 or a **long / high-resolution video** — with memory that stays flat no matter how long you run.
+
+![sam2-realtime demo](assets/demo.gif)
 
 SAM 2's own video predictor loads the entire video into memory before it can track. That is fine for
 short clips, but it breaks for two common cases:
@@ -10,7 +12,7 @@ short clips, but it breaks for two common cases:
 - a **long or 4K video**, which can be tens of gigabytes once decoded (enough to OOM the GPU or the
   machine).
 
-`sam2-stream` feeds frames through SAM 2 **one at a time** and keeps only a small rolling window in
+`sam2-realtime` feeds frames through SAM 2 **one at a time** and keeps only a small rolling window in
 memory, so GPU and RAM usage are constant whether you track for ten seconds or ten hours.
 
 ## Features
@@ -50,9 +52,9 @@ git clone https://github.com/facebookresearch/sam2.git
 pip install -e "./sam2[notebooks]"          # add SAM2_BUILD_CUDA=0 if you have no nvcc
 bash ./sam2/checkpoints/download_ckpts.sh    # downloads the sam2.1 checkpoints
 
-# 3. sam2-stream
-git clone https://github.com/<you>/sam2-stream.git
-pip install -e ./sam2-stream
+# 3. sam2-realtime
+git clone https://github.com/mohammadakbar2603/sam2-realtime.git
+pip install -e ./sam2-realtime
 ```
 
 ## Quickstart
@@ -60,7 +62,7 @@ pip install -e ./sam2-stream
 ```python
 import cv2
 from sam2.build_sam import build_sam2_video_predictor
-from sam2_stream import LiveSAM2, overlay_masks
+from sam2_realtime import LiveSAM2, overlay_masks
 
 predictor = build_sam2_video_predictor(
     "configs/sam2.1/sam2.1_hiera_t.yaml", "checkpoints/sam2.1_hiera_tiny.pt", device="cuda")
@@ -81,7 +83,7 @@ def next_frame():
 
 for frame_idx, frame_rgb, masks in live.track(first, prompts, next_frame):
     # masks: {obj_id: HxW bool array}
-    cv2.imshow("sam2-stream", overlay_masks(frame_rgb, masks))
+    cv2.imshow("sam2-realtime", overlay_masks(frame_rgb, masks))
     if cv2.waitKey(1) == 27:                  # Esc to quit
         break
 cap.release()

@@ -4,7 +4,7 @@ SAM 2's video predictor is built for short, pre-recorded clips: it decodes the w
 big tensor before tracking. Each frame, at the model's input size, is about 12 MB, so a few thousand
 frames is already tens of gigabytes — too much for a live stream (which never ends) or a long/4K clip.
 
-Two things grow with video length. `sam2-stream` bounds both.
+Two things grow with video length. `sam2-realtime` bounds both.
 
 ## 1. Frames: a ring buffer
 
@@ -46,7 +46,7 @@ The prompt frame is a conditioning frame and is kept, so tracking is unaffected.
 
 ## Result
 
-| | naive (load everything) | sam2-stream |
+| | naive (load everything) | sam2-realtime |
 |---|---|---|
 | frames in memory | all of them (grows) | fixed ring (constant) |
 | tracker memory | grows every frame | short window (constant) |

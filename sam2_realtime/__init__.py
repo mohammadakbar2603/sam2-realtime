@@ -1,6 +1,6 @@
-# Copyright 2026 sam2-stream contributors.
+# Copyright 2026 sam2-realtime contributors.
 # Licensed under the Apache License, Version 2.0 (see LICENSE).
-"""sam2-stream: bounded-memory real-time streaming for SAM 2 (live camera + long videos)."""
+"""sam2-realtime: bounded-memory real-time streaming for SAM 2 (live camera + long videos)."""
 
 from .live import LiveSAM2, Ring
 from .viz import color_for_id, overlay_masks

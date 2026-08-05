@@ -3,7 +3,7 @@ requires = ["setuptools>=64"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "sam2-stream"
+name = "sam2-realtime"
 version = "0.1.0"
 description = "Bounded-memory real-time streaming for SAM 2: live camera and long/high-res videos, without loading the whole thing into memory."
 readme = "README.md"
@@ -20,4 +20,8 @@ dependencies = [
 # See the README for the install steps (SAM 2 comes from facebookresearch/sam2).
 
 [tool.setuptools.packages.find]
-include = ["sam2_stream*"]
+include = ["sam2_realtime*"]
+
+[project.urls]
+Homepage = "https://github.com/mohammadakbar2603/sam2-realtime"
+Repository = "https://github.com/mohammadakbar2603/sam2-realtime"

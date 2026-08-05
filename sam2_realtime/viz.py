@@ -1,4 +1,4 @@
-# Copyright 2026 sam2-stream contributors.
+# Copyright 2026 sam2-realtime contributors.
 # Licensed under the Apache License, Version 2.0 (see LICENSE).
 """Small visualization helpers: stable per-id colors and mask overlay."""
 

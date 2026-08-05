@@ -1,4 +1,4 @@
-# Copyright 2026 sam2-stream contributors.
+# Copyright 2026 sam2-realtime contributors.
 # Licensed under the Apache License, Version 2.0 (see LICENSE).
 """
 Bounded-memory streaming wrapper around SAM 2's video predictor.
@@ -11,7 +11,7 @@ old tracker memory each step, so GPU **and** RAM stay flat regardless of length.
 Typical use::
 
     from sam2.build_sam import build_sam2_video_predictor
-    from sam2_stream import LiveSAM2
+    from sam2_realtime import LiveSAM2
 
     predictor = build_sam2_video_predictor(cfg, ckpt, device="cuda")
     live = LiveSAM2(predictor)
@@ -131,7 +131,6 @@ class LiveSAM2:
                     nc.pop(k, None)
 
     # -- public API --------------------------------------------------------------
-    @torch.inference_mode()
     def track(self, first_rgb: np.ndarray, prompts, frame_source):
         """Track the seeded objects across a stream, yielding one result per frame.
 
@@ -145,8 +144,10 @@ class LiveSAM2:
         Yields:
             ``(frame_idx, frame_rgb, masks)`` where ``masks`` is ``{obj_id: HxW bool ndarray}``.
         """
-        with torch.autocast(self.p.device if isinstance(self.p.device, str) else self.p.device.type,
-                            dtype=torch.bfloat16):
+        # NOTE: use an explicit ``with`` (not an @inference_mode decorator): a decorator does not
+        # stay active across a generator's yields, which would leave autograd on and run ~3x slower.
+        dev = self.p.device if isinstance(self.p.device, str) else self.p.device.type
+        with torch.inference_mode(), torch.autocast(dev, dtype=torch.bfloat16):
             state = self._start_state(first_rgb)
             self._seed(state, prompts)
             raw = {0: first_rgb}
@@ -157,9 +158,13 @@ class LiveSAM2:
                 self._evict(state, fidx)
                 frame_rgb = raw.pop(fidx, first_rgb)
                 h, w = frame_rgb.shape[:2]
+                # one GPU->CPU transfer for all objects (per-object .cpu() syncs kill throughput)
+                mask_arr = (video_masks > 0.0).cpu().numpy()
                 masks = {}
                 for i, oid in enumerate(obj_ids):
-                    m = (video_masks[i] > 0.0).squeeze().cpu().numpy()
+                    m = mask_arr[i]
+                    while m.ndim > 2:
+                        m = m[0]
                     if m.shape != (h, w):
                         m = cv2.resize(m.astype(np.uint8), (w, h),
                                        interpolation=cv2.INTER_NEAREST).astype(bool)
