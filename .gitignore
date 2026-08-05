@@ -1,0 +1,25 @@
+# checkpoints & data (never commit these)
+*.pt
+*.pth
+checkpoints/
+*.mp4
+*.mov
+*.avi
+*.MP4
+*_frames/
+assets/*.jpg
+assets/*.png
+
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+build/
+dist/
+.venv/
+env/
+
+# os / editor
+.DS_Store
+.vscode/
